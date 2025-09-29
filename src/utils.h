@@ -7,12 +7,12 @@
 /************************* Definitions *************************/
 
 #define TABVAL 2
+#define CEIL_DIV(X, Y) (1 + (((X) - 1)/(Y)))
 typedef unsigned char smalluint ;
 
 std::ostream& operator<< (std::ostream& os, smalluint su) ;
 
 /************************* Color enum *************************/
-
 
 // Color modifiers during verification
 namespace color {
@@ -56,7 +56,7 @@ inline void print_tabs(smalluint no_tabs) {
 // Starting message of a verification function
 inline void print_verification(smalluint ver_no, smalluint tabs=0) {
   print_tabs(tabs) ;
-  std::cout << "Running verification " << color::FG_BLUE << "1" << color::FG_DEFAULT << " ---\n" ;
+  std::cout << "Running verification " << color::FG_BLUE << ver_no << color::FG_DEFAULT << " ---\n" ;
 }
 
 // Message for checks in a verification
@@ -85,6 +85,7 @@ inline void pass_verify(int no_checks, smalluint tabs=1) {
 inline void fail_verify(int no_checks, std::vector<smalluint> failed_checks, smalluint tabs=1) {
   print_tabs(tabs) ;
   std::cout << color::FG_RED << "Failed " << color::FG_BLUE << (failed_checks.size()) << color::FG_RED << " out of " << color::FG_BLUE << no_checks << color::FG_RED << " checks. " << color::FG_DEFAULT << "\n" ;
+  print_tabs(tabs) ;
   std::cout << "Failed checks - " << color::FG_BLUE << failed_checks[0] << color::FG_DEFAULT ;
   for (auto it = failed_checks.begin() + 1; it != failed_checks.end() ; it++)
     std::cout << ", " << color::FG_BLUE << (*it) << color::FG_DEFAULT ;

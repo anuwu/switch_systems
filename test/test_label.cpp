@@ -20,7 +20,7 @@ void test1(int argc, char **argv) {
   std::cout << "For maxval " << maxval << ", the bitlength = " << lab.bitlength << "\n" ;
 }
 
-// Arithmetic label
+// Test ArithLabel class
 void test2(int argc, char **argv) {
   // Abort message
   const auto abort = [&] {
@@ -38,7 +38,7 @@ void test2(int argc, char **argv) {
   std::cout << "For maxval " << maxval << ", the bitlength = " << lab.bitlength << "\n" ;
 }
 
-// BMR label
+// Test BMRLabel class
 void test3(int argc, char **argv) {
   // Abort message
   const auto abort = [&] {
@@ -73,12 +73,12 @@ int main (int argc, char** argv) {
     test1(argc, argv) ;
     break ;
 
-  // Label constructor
+  // ArithLabel constructor
   case 2 :
     test2(argc, argv) ;
     break ;
 
-  // Label constructor
+  // BMRLabel constructor
   case 3 :
     test3(argc, argv) ;
     break ;
