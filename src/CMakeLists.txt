@@ -1,0 +1,1 @@
+add_library(SWITCH utils.cpp label.cpp wire.cpp)
