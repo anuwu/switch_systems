@@ -6,6 +6,7 @@
 
 /************************* Definitions *************************/
 
+#define LAMBDA 128
 #define TABVAL 2
 #define CEIL_DIV(X, Y) (1 + (((X) - 1)/(Y)))
 typedef unsigned char smalluint ;

@@ -2,8 +2,6 @@
 #include "utils.h"
 #include "label.h"
 
-#define LAMBDA 128
-
 // Label constructor
 void verify1(bool verbose = false) {
   // Setup verification subcases
@@ -90,7 +88,6 @@ void verify1(bool verbose = false) {
   else
     fail_verify(labs.size(), failed_checks) ;
 }
-
 
 // ArithLabel constructor
 void verify2(bool verbose = false) {

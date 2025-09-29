@@ -56,6 +56,22 @@ void test3(int argc, char **argv) {
   std::cout << "For maxval " << maxval << ", the bitlength = " << lab.bitlength << ", number of slots = " << lab.num_slots << "\n" ;
 }
 
+// // Checking copy constructors
+// void test4(int argc, char **argv) {
+//   // Testing arithmetic label
+//   ArithLabel lab1(LAMBDA, 65535) ;
+//   lab1.slots[0] = 1 ;
+//   ArithLabel lab2 = lab1 ;
+//   std::cout << "slot[0] of lab1 = " << lab1.slot[0] << ", slot[0] of lab1 = " << lab2.slots[0] << "\n" ;
+
+// }
+
+// Checking operators
+void test5(int argc, char **argv) {
+
+}
+
+
 int main (int argc, char** argv) {
   if (argc < 2) {
     std::cerr << "To view help : " << argv[0] << " <test_no> \n" ;
