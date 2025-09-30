@@ -32,6 +32,29 @@ public :
     // Set slots
     this->num_slots = 0 ;
   }
+
+  Label(uint l, std::uint64_t mv, std::uint64_t nsm, std::uint64_t val=0ULL) : Label(l, mv) {
+    this->num_slots = 0 ;
+    for (uint i = 0 ; i < this->num_slots ; i++)
+      this->slots[i] = val ;
+  }
+
+  // Copy constructor
+  Label(const Label &other) {
+    this->lambda = other.lambda ;
+    this->max_value = other.max_value ;
+    this->bitlength = other.bitlength ;
+    this->num_slots = other.num_slots ;
+    this->slots = std::vector<std::uint64_t>(this->num_slots, 0ULL) ;
+    for (uint i = 0 ; i < this->num_slots ; i++)
+      this->slots[i] = other.slots[i] ;
+  }
+
+  // Operators for labels
+  Label operator+(const Label &other) ;
+  Label operator-(const Label &other) ;
+  Label operator*(const Label &other) ;
+  Label operator/(const Label &other) ;
 } ;
 
 class ArithLabel : public Label {
@@ -45,6 +68,15 @@ public :
     this->num_slots = this->lambda ;
     this->slots = std::vector<std::uint64_t>(this->lambda, 0ULL) ;
   }
+
+  // Copy constructor
+  ArithLabel(const ArithLabel &other) : Label(other) {}
+
+  // // Operators for labels
+  ArithLabel operator+(const ArithLabel &other) ;
+  ArithLabel operator-(const ArithLabel &other) ;
+  ArithLabel operator*(const ArithLabel &other) ;
+  ArithLabel operator/(const ArithLabel &other) ;
 } ;
 
 class BMRLabel : public Label {
@@ -60,6 +92,24 @@ public :
     // Fill slots
     this->slots = std::vector<std::uint64_t>(this->num_slots, 0ULL) ;
   }
+
+  // Copy constructor
+  BMRLabel(const BMRLabel &other) : Label(other) {}
+
+  // Operators for labels
+  BMRLabel operator+(const BMRLabel &other) ;
+  BMRLabel operator-(const BMRLabel &other) ;
+  BMRLabel operator*(const BMRLabel &other) ;
+  BMRLabel operator/(const BMRLabel &other) ;
 } ;
+
+// Constant label
+template <class T>
+T const_label(T &other, std::uint64_t val) {
+  T retlab(other) ;
+  for (uint i = 0 ; i < other.num_slots ; i++)
+    retlab.slots[i] = val ;
+  return retlab ;
+}
 
 #endif
