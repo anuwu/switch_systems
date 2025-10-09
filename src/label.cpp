@@ -77,7 +77,7 @@ Label Label::operator/(const Label &other) {
 }
 
 
-// /************* ArithLabel operators *************/
+/************* ArithLabel operators *************/
 
 ArithLabel ArithLabel::operator+(const ArithLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator+(other) ;
@@ -100,7 +100,7 @@ ArithLabel ArithLabel::operator/(const ArithLabel &other) {
 }
 
 
-// /************* BMRLabel operators *************/
+/************* BMRLabel operators *************/
 
 BMRLabel BMRLabel::operator+(const BMRLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator+(other) ;
@@ -120,4 +120,9 @@ BMRLabel BMRLabel::operator*(const BMRLabel &other) {
 BMRLabel BMRLabel::operator/(const BMRLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator/(other) ;
   return static_cast<BMRLabel&>(ret_label) ;
+}
+
+
+std::ostream operator<<(std::ostream &os, const Label& lab) {
+  // TODO
 }

@@ -6,6 +6,8 @@
 #include <vector>
 #include "utils.h"
 
+/************************* Label class *************************/
+
 class Label {
 public :
   // Attributes
@@ -57,6 +59,10 @@ public :
   Label operator/(const Label &other) ;
 } ;
 
+std::ostream operator<<(std::ostream &os, const Label& lab) ;
+
+/************************* ArithLabel class *************************/
+
 class ArithLabel : public Label {
 public :
   // Default Constructor
@@ -78,6 +84,8 @@ public :
   ArithLabel operator*(const ArithLabel &other) ;
   ArithLabel operator/(const ArithLabel &other) ;
 } ;
+
+/************************* BMRLabel class *************************/
 
 class BMRLabel : public Label {
 public :
@@ -106,6 +114,7 @@ public :
 // Constant label
 template <class T>
 T const_label(T &other, std::uint64_t val) {
+  std::cout << "In this template function" << "\n" ;
   T retlab(other) ;
   for (uint i = 0 ; i < other.num_slots ; i++)
     retlab.slots[i] = val ;

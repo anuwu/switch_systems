@@ -88,7 +88,7 @@ void test4(int argc, char **argv) {
   /**** Checking BMRLabel ****/
 
   // Print stuff
-  std::cout << "\nCopy constructor of BMRLabel --- \n" ;
+  std::cout << "\nCopy constructor of BMRLabel --- \n\n" ;
 
   // Initialize constant label
   BMRLabel bmr_lab1(lambda, maxval) ;

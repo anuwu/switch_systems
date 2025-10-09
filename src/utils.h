@@ -3,6 +3,7 @@
 
 #include <ostream>
 #include <vector>
+#include "emp-tool/emp-tool.h"
 
 /************************* Definitions *************************/
 
@@ -12,6 +13,7 @@
 typedef unsigned char smalluint ;
 
 std::ostream& operator<< (std::ostream& os, smalluint su) ;
+std::ostream& operator<<(std::ostream& out, const emp::block& blk) ;  // Weird, but doesn't work any other way.
 
 /************************* Color enum *************************/
 
