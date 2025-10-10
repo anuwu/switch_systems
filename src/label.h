@@ -10,11 +10,13 @@
 
 class Label {
 public :
-  // Attributes
+  // General attributes
   meduint lambda ;                        // meduint : scalable, can be > 256 --> Security parameter
   std::uint64_t max_value ;               // uint64_t : full unsigned integer -->  o-1 where o = order of the ring/field the label exists
   smalluint bitlength ;                   // smalluint : less than 256 --> Number of bits required to hold an element of the ring i.e., bitlength = ceil(log_2(max_value+1))
   meduint loss ;                          // meduint : small integer < lambda --> bits of entropy loss
+
+  // Entropy attributes
   meduint entropy_slots ;                 // meduint : <= lambda --> Number of slots for holding entropy
   std::vector<std::uint64_t> slots ;      // vector<uint64_t> --> each slot has a full unsigned integer. list of :entropy_slots: slots
   std::uint64_t color ;                   // uint64_t --> same datatype as entropy slot. Color slots
@@ -91,6 +93,7 @@ std::ostream& operator<< (std::ostream &os, const Label& lab) ;
 
 class ArithLabel : public Label {
 public :
+  // Derived attributes
   smalluint width ;   // width of label
 
   // Default Constructor
@@ -124,6 +127,7 @@ public :
 
 class BMRLabel : public Label {
 public :
+  // Derived attributes
   smalluint pr ;                // smalluint : prime < 256 --> prime finite field
 
   // Default Constructor
@@ -161,7 +165,6 @@ public :
 // Constant label
 template <class T>
 T const_label(T &other, std::uint64_t val) {
-  std::cout << "In this template function" << "\n" ;
   T retlab(other) ;
   for (uint i = 0 ; i < other.entropy_slots ; i++)
     retlab.slots[i] = val ;
