@@ -13,9 +13,10 @@ void test1(int argc, char **argv) {
     abort() ;
 
   // Read arguments
-  std::size_t lambda = atoi(argv[2]) ;
-  std::uint64_t maxval = atoi(argv[3]) ;
+  meduint lambda = atoi(argv[2]) ; // meduint : from attribute
+  std::uint64_t maxval = atoi(argv[3]) ; // unint64_t : from attribute
 
+  // Print stuff
   Label lab = Label(lambda, maxval) ;
   std::cout << "For maxval " << maxval << ", the bitlength = " << lab.bitlength << "\n" ;
 }
@@ -24,38 +25,38 @@ void test1(int argc, char **argv) {
 void test2(int argc, char **argv) {
   // Abort message
   const auto abort = [&] {
-    std::cerr << "Usage : " << argv[0] << " 2 <lambda> <maxval>\n" ;
+    std::cerr << "Usage : " << argv[0] << " 2 <lambda> <width>\n" ;
     exit(EXIT_FAILURE) ;
   } ;
   if (argc != 4)
     abort() ;
 
   // Read arguments
-  std::size_t lambda = atoi(argv[2]) ;
-  std::uint64_t maxval = atoi(argv[3]) ;
+  meduint lambda = atoi(argv[2]) ; // meduint : from attribute
+  smalluint width = atoi(argv[3]) ; // unint64_t : from attribute
 
   // Print stuff
-  ArithLabel lab = ArithLabel(lambda, maxval) ;
-  std::cout << "For maxval " << maxval << ", the bitlength = " << lab.bitlength << "\n" ;
+  ArithLabel lab = ArithLabel(lambda, width) ;
+  std::cout << "For width = " << width << ", the bitlength = " << lab.bitlength << ", and maxval = " << lab.max_value <<  "\n" ;
 }
 
 // Test BMRLabel class
 void test3(int argc, char **argv) {
   // Abort message
   const auto abort = [&] {
-    std::cerr << "Usage : " << argv[0] << " 3 <lambda> <maxval>\n" ;
+    std::cerr << "Usage : " << argv[0] << " 3 <lambda> <prime>\n" ;
     exit(EXIT_FAILURE) ;
   } ;
   if (argc != 4)
     abort() ;
 
   // Read arguments
-  std::size_t lambda = atoi(argv[2]) ;
-  std::uint64_t maxval = atoi(argv[3]) ;
+  meduint lambda = atoi(argv[2]) ; // meduint : from attribute
+  smalluint pr = atoi(argv[3]) ; // smalluint : from attribute
 
   // Print stuff
-  BMRLabel lab = BMRLabel(lambda, maxval) ;
-  std::cout << "For maxval " << maxval << ", the bitlength = " << lab.bitlength << ", number of slots = " << lab.num_slots << "\n" ;
+  BMRLabel lab = BMRLabel(lambda, pr) ;
+  std::cout << "For prime " << pr << ", the bitlength = " << lab.bitlength << ", maxval = " << lab.max_value << ", number of slots = " << lab.entropy_slots << ", and loss = " << lab.loss << "\n" ;
 }
 
 // Checking copy constructors
@@ -74,8 +75,8 @@ void test4(int argc, char **argv) {
   std::cout << "Copy constructor of ArithLabel --- \n" ;
 
   // Read arguments
-  std::size_t lambda = atoi(argv[2]) ;
-  std::uint64_t maxval = atoi(argv[3]) ;
+  meduint lambda = atoi(argv[2]) ; // meduint : from attribute
+  std::uint64_t maxval = atoi(argv[3]) ; // unint64_t : from attribute
 
   // Initialize constant label
   ArithLabel arith_lab1(lambda, maxval) ;
@@ -110,10 +111,10 @@ void test5(int argc, char **argv) {
     abort() ;
 
   // Read arguments
-  std::size_t lambda = atoi(argv[2]) ;
-  std::uint64_t maxval = atoi(argv[3]) ;
-  std::uint64_t op1 = atoi(argv[4]) ;
-  std::uint64_t op2 = atoi(argv[5]) ;
+  meduint lambda = atoi(argv[2]) ; // meduint : from attribute
+  std::uint64_t maxval = atoi(argv[3]) ; // unint64_t : from attribute
+  std::uint64_t op1 = atoi(argv[4]) ; // unint64_t : from attribute
+  std::uint64_t op2 = atoi(argv[5]) ; // unint64_t : from attribute
 
   /**** Operating on ArithLabel ****/
 
@@ -177,7 +178,7 @@ int main (int argc, char** argv) {
   }
 
   // Extract test number
-  int test_no = atoi(argv[1]) ;
+  smalluint test_no = atoi(argv[1]) ;   // smalluint : test cases < 256
 
   // Enumerate test cases
   switch (test_no) {
@@ -197,10 +198,12 @@ int main (int argc, char** argv) {
     test3(argc, argv) ;
     break ;
 
+  // Checking copy constructors
   case 4 :
     test4(argc, argv) ;
     break ;
 
+  // Checking operators
   case 5 :
     test5(argc, argv) ;
     break ;

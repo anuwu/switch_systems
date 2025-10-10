@@ -3,17 +3,31 @@
 
 #include <ostream>
 #include <vector>
+#include <unordered_set>
 #include "emp-tool/emp-tool.h"
 
 /************************* Definitions *************************/
 
+// Constants
 #define LAMBDA 128
 #define TABVAL 2
-#define CEIL_DIV(X, Y) (1 + (((X) - 1)/(Y)))
-typedef unsigned char smalluint ;
 
+// Macros
+#define CEIL_DIV(X, Y) (1 + (((X) - 1)/(Y)))
+#define FLOOR_DIV(X, Y) ((X)/(Y))
+
+// Custom type names
+typedef unsigned char smalluint ;
+typedef char smallint ;
+typedef unsigned short meduint ;
+typedef short medint ;
+
+// ostream operator for custom type names
 std::ostream& operator<< (std::ostream& os, smalluint su) ;
-std::ostream& operator<<(std::ostream& out, const emp::block& blk) ;  // Weird, but doesn't work any other way.
+std::ostream& operator<< (std::ostream& os, smallint su) ;
+
+// ostream operator for emp::block
+std::ostream& operator<< (std::ostream& os, const emp::block& blk) ;  // Weird, but doesn't work any other way.
 
 /************************* Color enum *************************/
 
@@ -98,6 +112,12 @@ inline void fail_verify(int no_checks, std::vector<smalluint> failed_checks, sma
 /************************* Others *************************/
 
 // Get bitlength required to hold a maximum value
-int get_bitlength(std::uint64_t maxval) ;
+smalluint get_bitlength(std::uint64_t maxval) ;
+
+// Convert width to maximum value
+std::uint64_t width_to_maxval(smalluint width) ;
+
+// Check if prime number
+bool check_prime(smalluint p) ;
 
 #endif
