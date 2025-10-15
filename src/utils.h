@@ -63,6 +63,77 @@ namespace color {
 
 /************************* Block manipulation *************************/
 
+// Left shift block
+inline emp::block left_shift(const emp::block &blk, int shift) {
+  uint64_t* data = (uint64_t*)&blk ;
+
+  if (shift > 127)
+    return emp::zero_block ;
+  else if (shift > 63) {
+    uint64_t dat1, dat0 ;
+    dat0 = 0ULL ;
+    dat1 = data[0] << (shift - 64) ;
+    return emp::makeBlock(dat1, dat0) ;
+  } else {
+    uint64_t dat1, dat0 ;
+    uint64_t mask = (1ULL << shift) - 1 ;
+
+    // Copying most significant bits of data[0] that will get erased
+    mask = mask << (64 - shift) ;
+    mask = mask & data[0] ;
+    mask = mask >> (64 - shift) ;
+
+    // Shifting data[1] and pasting from data[0]
+    dat1 = data[1] << shift ;
+    dat1 = dat1 ^ mask ;
+
+    // Shifting data[0] and return
+    dat0 = data[0] << shift ;
+    return emp::makeBlock(dat1, dat0) ;
+  }
+}
+
+// Right shift block
+inline emp::block right_shift(const emp::block &blk, int shift) {
+  uint64_t* data = (uint64_t*)&blk ;
+
+  if (shift > 127)
+    return emp::zero_block ;
+  else if (shift > 63) {
+    uint64_t dat1, dat0 ;
+    dat1 = 0ULL ;
+    dat0 = data[1] >> (shift - 64) ;
+    return emp::makeBlock(dat1, dat0) ;
+  } else {
+    uint64_t dat1, dat0 ;
+    uint64_t mask = (1ULL << shift) - 1 ;
+
+    // Copying least significant bits of data[1] that will get erased
+    mask = mask & data[1] ;
+
+    // Shifting data[0] and pasting from data[1]
+    // cout << "This is data[0] = " << hex << setw(16) << setfill('0') << data[0] << "\n" ;
+    dat0 = data[0] >> shift ;
+    mask = mask << (64 - shift) ;
+    dat0 = dat0 ^ mask ;
+
+    // Shifting data[1] and return
+    dat1 = data[1] >> shift ;
+    return emp::makeBlock(dat1, dat0) ;
+  }
+}
+
+// XOR array of blocks
+inline void xorBlocks_arr(emp::block* res, emp::block* y, int nblocks) {
+	const emp::block *dest = nblocks + res ;
+	for (; res != dest;) {
+    *res = *res ^ *y ;
+    res++ ; y++ ;
+	}
+}
+
+/************************* Printing stuff *************************/
+
 // Printing tabs
 inline void print_tabs(smalluint no_tabs) {
   for (smalluint i = 0 ; i < no_tabs ; i++) {
@@ -112,13 +183,60 @@ inline void fail_verify(int no_checks, std::vector<smalluint> failed_checks, sma
 
 /************************* Others *************************/
 
+
 // Get bitlength required to hold a maximum value
-smalluint get_bitlength(std::uint64_t maxval) ;
+inline smalluint get_bitlength(std::uint64_t maxval) {
+  // Initialize bitlength
+  smalluint bl = 0 ;
+
+  // Loop until argument is 0
+  do {
+    bl += 1 ;
+    maxval = maxval >> 1 ; 
+  } while (maxval != 0ULL) ; // If this is 0ULL, all bits have been exhausted
+
+  // Return
+  return bl ;
+}
 
 // Convert width to maximum value
-std::uint64_t width_to_maxval(smalluint width) ;
+inline std::uint64_t width_to_maxval(smalluint width) {
+  assert(width <= 64 && "Width cannot be > 64") ;
+
+  if (width == 64)
+    return (0ULL - 1ULL) ;
+  else
+    return (1ULL << width) - 1ULL ;
+}
 
 // Check if prime number
-bool check_prime(smalluint p) ;
+inline bool check_prime(smalluint p) {
+  // List of primes
+  std::unordered_set<smalluint> primes({
+    2, // bitlength 1 
+    3, // bitlength 2
+    5, 7, // bitlength 3
+    11, 13, // bitlength 4
+    17, 19, 23, 29, 31, // bitlength 5
+    37, 41, 43, 47, 53, 59, 61, // bitlength 6
+    67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, // bitlength 7
+    131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251 //bitlength 8
+  }) ;
+
+  return primes.find(p) != primes.end() ;
+}
+
+// Correct value to be filled in a slot
+inline std::uint64_t fix_fill(std::uint64_t v, std::uint64_t mv) {
+  // Assume filled value is equal to v
+  std::uint64_t fill = v ;
+
+  // Fill value doesn't need to change if max value is 0xffff or v == 0. Negate this condition and change it.
+  if (mv < all_ones_64t && v)
+    fill %= mv + 1 ;
+
+  // Return
+  return fill ;
+}
 
 #endif

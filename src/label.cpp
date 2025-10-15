@@ -113,6 +113,30 @@ std::ostream& operator<< (std::ostream &os, const Label& lab) {
   return os ;
 }
 
+emp::block Label::to_block() {
+  // Iinitialize block to be return
+  emp::block ret_blk = emp::zero_block ;
+
+  for (meduint i = 0 ; i < this->entropy_slots ; i++) {
+    // Make block out of a slot. Put slot value in LSB. 
+    emp::block slot_blk = emp::makeBlock(0ULL, this->slots[i]) ;
+
+    // Shift slot to the right place
+    slot_blk = left_shift(slot_blk, i*this->bitlength) ;
+
+    // Accumulate slot into return block
+    xorBlocks_arr(&ret_blk, &slot_blk, 1) ;
+  }
+
+  // Accumulate color lot into block
+  emp::block color_blk = emp::makeBlock(0ULL, this->color) ;
+  color_blk = left_shift(color_blk, this->bitlength*this->entropy_slots) ;
+  xorBlocks_arr(&ret_blk, &color_blk, 1) ;
+
+  // Return
+  return ret_blk ;
+}
+
 /************* ArithLabel *************/
 
 ArithLabel ArithLabel::operator+(const ArithLabel &other) {

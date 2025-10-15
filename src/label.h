@@ -25,7 +25,12 @@ public :
 
   // Initialize all slots to 0ULL
   void initialize_slots(std::uint64_t v=0ULL) {
-    this->slots = std::vector<std::uint64_t>(this->entropy_slots, v) ;
+    this->slots = std::vector<std::uint64_t>(this->entropy_slots, fix_fill(v, this->max_value)) ;
+  }
+
+  // Set color
+  void set_color(std::uint64_t v=0ULL) {
+    this->color = fix_fill(v, this->max_value) ;
   }
 
   /**** Constructors ****/
@@ -55,7 +60,15 @@ public :
   }
 
   // Constructor with emp::block and reference label
-  Label(emp::block blk, Label &other) { }
+  Label(emp::block blk, Label &other) {
+    // Copy attributes
+    this->lambda = other.lambda ;
+    this->max_value = other.max_value ;
+    this->bitlength = other.bitlength ;
+    this->loss = other.loss ;
+
+    
+   }
 
   // Constructor with security param, max value, number of slots, color
   Label(meduint l, std::uint64_t mv, std::uint64_t ns, std::uint64_t val=0ULL, std::uint64_t col=0ULL, meduint loss=0ULL) : Label(l, mv) {
@@ -90,10 +103,7 @@ public :
 
   /**** Methods ****/
 
-  emp::block convert_to_block() {
-    emp::block blk = emp::all_one_block ;
-    return blk ;
-  }
+  emp::block to_block() ;
 } ;
 
 std::ostream& operator<< (std::ostream &os, const Label& lab) ;

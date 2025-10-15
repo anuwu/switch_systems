@@ -215,6 +215,50 @@ void test6(int argc, char **argv) {
   std::cout << blab << "\n" ;
 }
 
+// Checking Label to block / block to Label
+void test7(int argc, char **argv) {
+  // Abort message
+  const auto abort = [&] {
+    std::cerr << "Usage : " << argv[0] << " 7 <a_width> <a_slot> <a_color> <b_prime> <b_slot> <b_color>\n" ;
+    exit(EXIT_FAILURE) ;
+  } ;
+  if (argc != 8)
+    abort() ;
+
+  // Read arguments
+  smalluint a_width = atoi(argv[2]) ;
+  std::uint64_t a_slot = atoi(argv[3]) ;
+  std::uint64_t a_color = atoi(argv[4]) ;
+  smalluint b_prime = atoi(argv[5]) ;
+  std::uint64_t b_slot = atoi(argv[6]) ;
+  std::uint64_t b_color = atoi(argv[7]) ;
+
+  /**** ArithLabel without entropy loss ****/
+
+  // Initialize ArithLabel
+  ArithLabel alab(LAMBDA, a_width) ;
+  alab.initialize_slots(a_slot) ;
+  alab.set_color(a_color) ;
+  
+  // Get block
+  emp::block alab_blk = alab.to_block() ;
+  // Print block
+  std::cout << "ArithLabel Block --> " << alab_blk << "\n" ;
+
+  /**** BMRLabel with entropy loss ****/
+
+  // Initialize BMRLabel
+  BMRLabel blab(LAMBDA, b_prime) ;
+  blab.initialize_slots(b_slot) ;
+  blab.set_color(b_color) ;
+  
+  // Get block
+  emp::block blab_blk = blab.to_block() ;
+
+  // Print block
+  std::cout << "BMRLabel Block --> " << blab_blk << "\n" ;
+}
+
 int main (int argc, char** argv) {
   if (argc < 2) {
     std::cerr << "To view help : " << argv[0] << " <test_no> \n" ;
@@ -255,6 +299,11 @@ int main (int argc, char** argv) {
   // Label ostream
   case 6 :
     test6(argc, argv) ;
+    break ;
+
+  // Label to block / block to label
+  case 7 :
+    test7(argc, argv) ;
     break ;
 
   // Default case
