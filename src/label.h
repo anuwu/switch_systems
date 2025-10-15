@@ -21,16 +21,14 @@ public :
   std::vector<std::uint64_t> slots ;      // vector<uint64_t> --> each slot has a full unsigned integer. list of :entropy_slots: slots
   std::uint64_t color ;                   // uint64_t --> same datatype as entropy slot. Color slots
 
+  /**** Helper constructor functions ****/
+
   // Initialize all slots to 0ULL
-  void initialize_slots() {
-    this->slots = std::vector<std::uint64_t>(this->entropy_slots, 0ULL) ;
+  void initialize_slots(std::uint64_t v=0ULL) {
+    this->slots = std::vector<std::uint64_t>(this->entropy_slots, v) ;
   }
 
-  // Initialize slots to a particular value
-  void fill_entropy_slots(std::uint64_t v=0ULL) {
-    for (meduint i = 0 ; i < this->entropy_slots ; i++)
-      this->slots[i] = v ;
-  }
+  /**** Constructors ****/
 
   // Default Constructor
   Label() {} ;
@@ -53,15 +51,18 @@ public :
 
     // Set slots
     this->entropy_slots = 0 ;
-    this->initialize_slots() ;
     this->color = 0ULL ;
   }
 
+  // Constructor with emp::block and reference label
+  Label(emp::block blk, Label &other) { }
+
   // Constructor with security param, max value, number of slots, color
-  Label(uint l, std::uint64_t mv, std::uint64_t ns, std::uint64_t val=0ULL, std::uint64_t col=0ULL) : Label(l, mv) {
+  Label(meduint l, std::uint64_t mv, std::uint64_t ns, std::uint64_t val=0ULL, std::uint64_t col=0ULL, meduint loss=0ULL) : Label(l, mv) {
     this->entropy_slots = ns ;
-    this->fill_entropy_slots(val) ;
+    this->initialize_slots(val) ;
     this->color = col ;
+    this->loss = loss ;
   }
 
   // Copy constructor
@@ -80,11 +81,19 @@ public :
     this->color = other.color ;
   }
 
-  // Operators for labels
+  /**** Operators ****/
+
   Label operator+(const Label &other) ;
   Label operator-(const Label &other) ;
   Label operator*(const Label &other) ;
-  Label operator/(const Label &other) ;
+  Label operator/(const Label &other) ; 
+
+  /**** Methods ****/
+
+  emp::block convert_to_block() {
+    emp::block blk = emp::all_one_block ;
+    return blk ;
+  }
 } ;
 
 std::ostream& operator<< (std::ostream &os, const Label& lab) ;
@@ -96,11 +105,13 @@ public :
   // Derived attributes
   smalluint width ;   // width of label
 
+  /**** Constructors ****/
+
   // Default Constructor
   ArithLabel() : Label() {} ;
 
-  // Constructor with security parameter and max value
-  ArithLabel(uint l, std::uint64_t w) : Label(l, width_to_maxval(w)), width(w) {
+  // Constructor with security parameter and width
+  ArithLabel(meduint l, std::uint64_t w) : Label(l, width_to_maxval(w)), width(w) {
     // Check width
     assert(w > 0 && w <= 64 && "Width of label must be between 1 and 64") ;
     this->width = w ;
@@ -111,12 +122,16 @@ public :
     this->color = 0ULL ;
   }
 
+  // Constructor with block and reference label
+  ArithLabel(emp::block &blk, ArithLabel &other) { ; }
+
   // Copy constructor
   ArithLabel(const ArithLabel &other) : Label(other) {
     this->width = other.width ;
   }
 
-  // Operators for labels
+  /**** Operators ****/
+
   ArithLabel operator+(const ArithLabel &other) ;
   ArithLabel operator-(const ArithLabel &other) ;
   ArithLabel operator*(const ArithLabel &other) ;
@@ -129,6 +144,8 @@ class BMRLabel : public Label {
 public :
   // Derived attributes
   smalluint pr ;                // smalluint : prime < 256 --> prime finite field
+
+  /**** Constructors ****/
 
   // Default Constructor
   BMRLabel() : Label() {} ;
@@ -150,17 +167,24 @@ public :
     this->color = 0ULL ;
   }
 
+  // Constructor with block and reference label
+  BMRLabel(emp::block &blk, BMRLabel &other) { ; }
+
   // Copy constructor
   BMRLabel(const BMRLabel &other) : Label(other) {
     this->pr = other.pr ;
   }
 
-  // Operators for labels
+  /**** Operators ****/
+
   BMRLabel operator+(const BMRLabel &other) ;
   BMRLabel operator-(const BMRLabel &other) ;
   BMRLabel operator*(const BMRLabel &other) ;
   BMRLabel operator/(const BMRLabel &other) ;
 } ;
+
+
+/************************* Methods *************************/
 
 // Constant label
 template <class T>

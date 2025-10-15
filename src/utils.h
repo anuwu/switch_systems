@@ -11,6 +11,7 @@
 // Constants
 #define LAMBDA 128
 #define TABVAL 2
+#define all_ones_64t 0xffffffffffffffff
 
 // Macros
 #define CEIL_DIV(X, Y) (1 + (((X) - 1)/(Y)))

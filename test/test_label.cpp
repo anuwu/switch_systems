@@ -171,6 +171,50 @@ void test5(int argc, char **argv) {
   std::cout << "slot[0] of bmr_lab1 = " << bmr_lab1.slots[0] << ", slot[0] of bmr_lab2 = " << bmr_lab2.slots[0] << ", slots[0] of bmr_lab_quo = " << bmr_lab_quo.slots[0] << "\n" ;
 }
 
+// Checking label parts
+void test6(int argc, char **argv) {
+  // Abort message
+  const auto abort = [&] {
+    std::cerr << "Usage : " << argv[0] << " 6 <lambda> <maxval> <slots> <val> <col> <loss>\n" ;
+    exit(EXIT_FAILURE) ;
+  } ;
+  if (argc != 8)
+    abort() ;
+
+  // Read arguments
+  meduint l = atoi(argv[2]) ;
+  uint64_t mv = atoi(argv[3]) ;
+  meduint ns = atoi(argv[4]) ;
+  uint64_t val = atoi(argv[5]) ;
+  uint64_t col = atoi(argv[6]) ;
+  meduint loss = atoi(argv[7]) ;
+
+  // Iintialize Label
+  Label lab(l, mv, ns, val % mv, col % mv, loss) ;
+
+  // ostream for label
+  std::cout << "Printing label --- \n" ;
+  std::cout << lab << "\n" ;
+
+  // Initialize ArithLabel
+  ArithLabel alab(LAMBDA, 64) ;
+  alab.color = (1ULL << 32) - 1 ;
+  alab.initialize_slots(all_ones_64t) ;
+
+  // ostream for ArithLabel
+  std::cout << "Printing ArithLabel --- \n" ;
+  std::cout << alab << "\n" ;
+
+  // Initialize BMRLabel
+  BMRLabel blab(LAMBDA, 17) ;
+  blab.color = 10 ;
+  blab.initialize_slots(4) ;
+
+  // ostream for BMRLabel
+  std::cout << "Printing BMRLabel --- \n" ;
+  std::cout << blab << "\n" ;
+}
+
 int main (int argc, char** argv) {
   if (argc < 2) {
     std::cerr << "To view help : " << argv[0] << " <test_no> \n" ;
@@ -206,6 +250,11 @@ int main (int argc, char** argv) {
   // Checking operators
   case 5 :
     test5(argc, argv) ;
+    break ;
+
+  // Label ostream
+  case 6 :
+    test6(argc, argv) ;
     break ;
 
   // Default case

@@ -32,7 +32,7 @@ void verify_label(bool verbose = false) {
     (1ULL<<63) - 1,           // 1.16
     1ULL<<63,                 // 1.17
     (1ULL<<63) + 1,           // 1.18
-    0xffffffffffffffff        // 1.19
+    all_ones_64t              // 1.19
   } ;
 
   // Creating ArithLabel objects. Using polymorphism. 

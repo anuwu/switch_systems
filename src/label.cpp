@@ -1,8 +1,9 @@
 #include <iostream>
+#include <bitset>
 #include "utils.h"
 #include "label.h"
 
-/************* Label operators *************/
+/************* Label class *************/
 
 Label Label::operator+(const Label &other) {
   // Checks
@@ -76,8 +77,43 @@ Label Label::operator/(const Label &other) {
   return retlab ;
 }
 
+std::ostream& operator<< (std::ostream &os, const Label& lab) {
+  // Scratch variable for processing
+  string st ;
 
-/************* ArithLabel operators *************/
+  // Dashed lines
+  string bigdash = string(lab.bitlength + 32, '=') ;
+  string smalldash = string(lab.bitlength + 32, '-') ;
+  os << bigdash << "\n" ;
+  
+  // Print entropy slots
+  os << "E - \t" ;
+  st = std::bitset<64>(lab.slots[0]).to_string().substr(64 - lab.bitlength, lab.bitlength) ;
+  os << st << " --> " << lab.slots[0] << "\n" ;
+  for (meduint i = 1 ; i < lab.entropy_slots ; i++) {
+    st = std::bitset<64>(lab.slots[i]).to_string().substr(64 - lab.bitlength, lab.bitlength) ;
+    os << "\t" << st << " --> " << lab.slots[i] << "\n" ;
+  }
+  os << smalldash << "\n" ;
+
+  // Print color bit
+  os << "C - \t" ;
+  st = std::bitset<64>(lab.color).to_string().substr(64 - lab.bitlength, lab.bitlength) ;
+  os << st << " --> " << lab.color << "\n" ;
+
+  // Print useless bits
+  os << smalldash << "\n" ;
+  os << "U - \t" ;
+  st = string(lab.loss, 'x') ; 
+  os << st << "\n" ;
+
+  // Print dashes again
+  os << bigdash << "\n" ;
+
+  return os ;
+}
+
+/************* ArithLabel *************/
 
 ArithLabel ArithLabel::operator+(const ArithLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator+(other) ;
@@ -100,7 +136,7 @@ ArithLabel ArithLabel::operator/(const ArithLabel &other) {
 }
 
 
-/************* BMRLabel operators *************/
+/************* BMRLabel *************/
 
 BMRLabel BMRLabel::operator+(const BMRLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator+(other) ;
@@ -120,8 +156,4 @@ BMRLabel BMRLabel::operator*(const BMRLabel &other) {
 BMRLabel BMRLabel::operator/(const BMRLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator/(other) ;
   return static_cast<BMRLabel&>(ret_label) ;
-}
-
-std::ostream& operator<<(std::ostream &os, const Label& lab) {
-  return os << "TODO : label" ; 
 }
