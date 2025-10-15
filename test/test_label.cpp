@@ -171,7 +171,7 @@ void test5(int argc, char **argv) {
   std::cout << "slot[0] of bmr_lab1 = " << bmr_lab1.slots[0] << ", slot[0] of bmr_lab2 = " << bmr_lab2.slots[0] << ", slots[0] of bmr_lab_quo = " << bmr_lab_quo.slots[0] << "\n" ;
 }
 
-// Checking label parts
+// Checking label printing
 void test6(int argc, char **argv) {
   // Abort message
   const auto abort = [&] {
