@@ -66,8 +66,32 @@ public :
     this->max_value = other.max_value ;
     this->bitlength = other.bitlength ;
     this->loss = other.loss ;
+    this->entropy_slots = other.entropy_slots ;
+    this->initialize_slots() ;
 
-    
+    // Block mask
+    std::uint64_t bl_mask_uint = 0ULL ;
+    for (smalluint i = 0 ; i < this->bitlength ; i++)
+      bl_mask_uint |= 1ULL << i ;
+    emp::block bl_mask = emp::makeBlock(0ULL, bl_mask_uint) ;
+
+    emp::block slot_blk = emp::zero_block ;
+    for (meduint i = 0 ; i < this->entropy_slots ; i++) {
+      // Make block out of a slot. Put slot value in LSB. 
+      andBlocks_arr(&slot_blk, &bl_mask, &blk, 1) ;
+
+      // Populate slot[i]
+      slot_blk = right_shift(slot_blk, i*this->bitlength) ;
+      this->slots[i] = ((std::uint64_t *)(&slot_blk))[0] ;
+
+      // Prepare bl_mask for next iteration  
+      bl_mask = left_shift(bl_mask, this->bitlength) ;
+    }
+
+    // Accumulate color lot into block
+    andBlocks_arr(&slot_blk, &bl_mask, &blk, 1) ;
+    slot_blk = right_shift(slot_blk, this->entropy_slots*this->bitlength) ;
+    this->color = ((std::uint64_t *)(&slot_blk))[0] ;
    }
 
   // Constructor with security param, max value, number of slots, color
@@ -112,6 +136,14 @@ std::ostream& operator<< (std::ostream &os, const Label& lab) ;
 
 class ArithLabel : public Label {
 public :
+  /*
+  Currently, ArithLabels of only width 1 can be converted to a block. 
+  In the future, ArithLabels of width > 1 should be converted to an array of blocks.
+
+  Each element of the array corresponds to one column of the label at a particular place value. 
+  See Appendix of [Heath] and follow the proof of indistinguishability of ArithLabels.
+  */
+
   // Derived attributes
   smalluint width ;   // width of label
 
@@ -133,7 +165,9 @@ public :
   }
 
   // Constructor with block and reference label
-  ArithLabel(emp::block &blk, ArithLabel &other) { ; }
+  ArithLabel(emp::block &blk, ArithLabel &other) : Label(blk, other) {
+    this->width = other.width ;
+  }
 
   // Copy constructor
   ArithLabel(const ArithLabel &other) : Label(other) {
@@ -178,7 +212,9 @@ public :
   }
 
   // Constructor with block and reference label
-  BMRLabel(emp::block &blk, BMRLabel &other) { ; }
+  BMRLabel(emp::block &blk, BMRLabel &other) : Label(blk, other) { 
+    this->pr = other.pr ;
+  }
 
   // Copy constructor
   BMRLabel(const BMRLabel &other) : Label(other) {

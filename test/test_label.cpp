@@ -215,35 +215,45 @@ void test6(int argc, char **argv) {
   std::cout << blab << "\n" ;
 }
 
+/*
+  TODO - See note in ArithLabel class
+*/
 // Checking Label to block / block to Label
 void test7(int argc, char **argv) {
   // Abort message
   const auto abort = [&] {
-    std::cerr << "Usage : " << argv[0] << " 7 <a_width> <a_slot> <a_color> <b_prime> <b_slot> <b_color>\n" ;
+    std::cerr << "Usage : " << argv[0] << " 7 <a_slot> <a_color> <b_prime> <b_slot> <b_color>\n" ;
     exit(EXIT_FAILURE) ;
   } ;
-  if (argc != 8)
+  if (argc != 7)
     abort() ;
 
   // Read arguments
-  smalluint a_width = atoi(argv[2]) ;
-  std::uint64_t a_slot = atoi(argv[3]) ;
-  std::uint64_t a_color = atoi(argv[4]) ;
-  smalluint b_prime = atoi(argv[5]) ;
-  std::uint64_t b_slot = atoi(argv[6]) ;
-  std::uint64_t b_color = atoi(argv[7]) ;
+  std::uint64_t a_slot = atoi(argv[2]) ;
+  std::uint64_t a_color = atoi(argv[3]) ;
+  smalluint b_prime = atoi(argv[4]) ;
+  std::uint64_t b_slot = atoi(argv[5]) ;
+  std::uint64_t b_color = atoi(argv[6]) ;
 
   /**** ArithLabel without entropy loss ****/
 
   // Initialize ArithLabel
-  ArithLabel alab(LAMBDA, a_width) ;
+  ArithLabel alab(LAMBDA, 1) ;
   alab.initialize_slots(a_slot) ;
   alab.set_color(a_color) ;
+
+  // Print original label
+  std::cout << "ArithLabel orig - \n" ;
+  std::cout << alab << "\n" ;
   
-  // Get block
+  // Get block and print
   emp::block alab_blk = alab.to_block() ;
-  // Print block
   std::cout << "ArithLabel Block --> " << alab_blk << "\n" ;
+
+  // Reconstruct label and print
+  ArithLabel re_alab(alab_blk, alab) ;
+  std::cout << "ArithLabel reconst - \n" ;
+  std::cout << re_alab << "\n" ;
 
   /**** BMRLabel with entropy loss ****/
 
@@ -251,12 +261,19 @@ void test7(int argc, char **argv) {
   BMRLabel blab(LAMBDA, b_prime) ;
   blab.initialize_slots(b_slot) ;
   blab.set_color(b_color) ;
-  
-  // Get block
-  emp::block blab_blk = blab.to_block() ;
 
-  // Print block
+  // Print original label
+  std::cout << "BMRLabel orig - \n" ;
+  std::cout << blab << "\n" ;
+  
+  // Get block and print it
+  emp::block blab_blk = blab.to_block() ;
   std::cout << "BMRLabel Block --> " << blab_blk << "\n" ;
+
+  // Reconstruct label and print
+  BMRLabel re_blab(blab_blk, blab) ;
+  std::cout << "BMRLabel reconst - \n" ;
+  std::cout << re_blab << "\n" ;
 }
 
 int main (int argc, char** argv) {

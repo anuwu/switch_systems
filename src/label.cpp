@@ -5,6 +5,7 @@
 
 /************* Label class *************/
 
+// Label addition operator
 Label Label::operator+(const Label &other) {
   // Checks
   assert(this->lambda == other.lambda && "Unequal security parameter in label operator +") ;
@@ -20,6 +21,7 @@ Label Label::operator+(const Label &other) {
   return retlab ;
 }
 
+// Label subtraction operator
 Label Label::operator-(const Label &other) {
   // Checks
   assert(this->lambda == other.lambda && "Unequal security parameter in label operator -") ;
@@ -42,6 +44,7 @@ Label Label::operator-(const Label &other) {
   return retlab ;
 }
 
+// Label multiplication operator
 Label Label::operator*(const Label &other) {
   // Checks
   assert(this->lambda == other.lambda && "Unequal security parameter in label operator *") ;
@@ -57,6 +60,7 @@ Label Label::operator*(const Label &other) {
   return retlab ;
 }
 
+// Label division operator
 Label Label::operator/(const Label &other) {
   // Checks
   assert(this->lambda == other.lambda && "Unequal security parameter in label operator +") ;
@@ -77,6 +81,33 @@ Label Label::operator/(const Label &other) {
   return retlab ;
 }
 
+// Label to block
+emp::block Label::to_block() {
+  // Iinitialize block to be return
+  emp::block ret_blk = emp::zero_block ;
+
+  emp::block slot_blk ;
+  for (meduint i = 0 ; i < this->entropy_slots ; i++) {
+    // Make block out of a slot. Put slot value in LSB. 
+    slot_blk = emp::makeBlock(0ULL, this->slots[i]) ;
+
+    // Shift slot to the right place
+    slot_blk = left_shift(slot_blk, i*this->bitlength) ;
+
+    // Accumulate slot into return block
+    xorBlocks_arr(&ret_blk, &slot_blk, 1) ;
+  }
+
+  // Accumulate color lot into block
+  slot_blk = emp::makeBlock(0ULL, this->color) ;
+  slot_blk = left_shift(slot_blk, this->bitlength*this->entropy_slots) ;
+  xorBlocks_arr(&ret_blk, &slot_blk, 1) ;
+
+  // Return
+  return ret_blk ;
+}
+
+// Label ostream
 std::ostream& operator<< (std::ostream &os, const Label& lab) {
   // Scratch variable for processing
   string st ;
@@ -113,47 +144,28 @@ std::ostream& operator<< (std::ostream &os, const Label& lab) {
   return os ;
 }
 
-emp::block Label::to_block() {
-  // Iinitialize block to be return
-  emp::block ret_blk = emp::zero_block ;
-
-  for (meduint i = 0 ; i < this->entropy_slots ; i++) {
-    // Make block out of a slot. Put slot value in LSB. 
-    emp::block slot_blk = emp::makeBlock(0ULL, this->slots[i]) ;
-
-    // Shift slot to the right place
-    slot_blk = left_shift(slot_blk, i*this->bitlength) ;
-
-    // Accumulate slot into return block
-    xorBlocks_arr(&ret_blk, &slot_blk, 1) ;
-  }
-
-  // Accumulate color lot into block
-  emp::block color_blk = emp::makeBlock(0ULL, this->color) ;
-  color_blk = left_shift(color_blk, this->bitlength*this->entropy_slots) ;
-  xorBlocks_arr(&ret_blk, &color_blk, 1) ;
-
-  // Return
-  return ret_blk ;
-}
 
 /************* ArithLabel *************/
 
+// ArithLabel addition operator
 ArithLabel ArithLabel::operator+(const ArithLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator+(other) ;
   return static_cast<ArithLabel&>(ret_label) ;
 }
 
+// ArithLabel subtraction operator
 ArithLabel ArithLabel::operator-(const ArithLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator-(other) ;
   return static_cast<ArithLabel&>(ret_label) ;
 }
 
+// ArithLabel multiplication operator
 ArithLabel ArithLabel::operator*(const ArithLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator*(other) ;
   return static_cast<ArithLabel&>(ret_label) ;
 }
 
+// ArithLabel division operator
 ArithLabel ArithLabel::operator/(const ArithLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator/(other) ;
   return static_cast<ArithLabel&>(ret_label) ;
@@ -162,21 +174,25 @@ ArithLabel ArithLabel::operator/(const ArithLabel &other) {
 
 /************* BMRLabel *************/
 
+// BMRLabel addition operator
 BMRLabel BMRLabel::operator+(const BMRLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator+(other) ;
   return static_cast<BMRLabel&>(ret_label) ;
 }
 
+// BMRLabel subtraction operator
 BMRLabel BMRLabel::operator-(const BMRLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator-(other) ;
   return static_cast<BMRLabel&>(ret_label) ;
 }
 
+// BMRLabel multiplication operator
 BMRLabel BMRLabel::operator*(const BMRLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator*(other) ;
   return static_cast<BMRLabel&>(ret_label) ;
 }
 
+// BMRLabel division operator
 BMRLabel BMRLabel::operator/(const BMRLabel &other) {
   Label ret_label = static_cast<Label&>(*this).operator/(other) ;
   return static_cast<BMRLabel&>(ret_label) ;

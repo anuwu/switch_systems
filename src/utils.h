@@ -126,10 +126,26 @@ inline emp::block right_shift(const emp::block &blk, int shift) {
 // XOR array of blocks
 inline void xorBlocks_arr(emp::block* res, emp::block* y, int nblocks) {
 	const emp::block *dest = nblocks + res ;
-	for (; res != dest;) {
-    *res = *res ^ *y ;
-    res++ ; y++ ;
+	for (; res != dest ;) {
+    *res = *res ^ *(y++) ;
+    res++ ; 
 	}
+}
+
+// AND array of blocks in-place
+inline void andBlocks_arr(emp::block* res, emp::block* y, int nblocks) {
+	const emp::block *dest = nblocks + res ;
+	for (; res != dest ;) {
+    *res = *res & * (y++) ;
+    res++ ;
+	}
+}
+
+// AND array of blocks
+inline void andBlocks_arr(emp::block* res, emp::block* x, emp::block* y, int nblocks) {
+	const emp::block *dest = nblocks + res ;
+	for (; res != dest ;)
+    *(res++) = *(x++) & *(y++) ;
 }
 
 /************************* Printing stuff *************************/
